@@ -1,6 +1,6 @@
 [package]
 name = "path_scan_macro"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2024"
 license = "MIT"
 authors = ["Conashimi Momota <momota.ry2@gmail.com>"]

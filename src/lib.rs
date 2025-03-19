@@ -6,8 +6,6 @@ use syn::{
     parse_macro_input,
 };
 
-use regex::escape;
-
 /// 1 つの腕（arm）
 /// - `patterns`: 1 つ以上の LitStr（`|` で連結）。デフォルト腕の場合は空。
 /// - `expr`: 変換式（ブロック・単一式どちらも可）
@@ -96,7 +94,7 @@ fn compile_pattern(pattern: &str) -> (String, Vec<String>) {
         match ch {
             '\\' => {
                 if let Some(next_ch) = chars.next() {
-                    regex_pattern.push_str(&escape(&next_ch.to_string()));
+                    regex_pattern.push_str(&regex::escape(&next_ch.to_string()));
                 }
             }
             '{' => {
@@ -127,11 +125,11 @@ fn compile_pattern(pattern: &str) -> (String, Vec<String>) {
                     identifiers.push(ident.clone());
                     regex_pattern.push_str(&format!("(?P<{}>[^/]+)", ident));
                 } else {
-                    regex_pattern.push_str(&escape(&":".to_string()));
+                    regex_pattern.push_str(&regex::escape(&":".to_string()));
                 }
             }
             _ => {
-                regex_pattern.push_str(&escape(&ch.to_string()));
+                regex_pattern.push_str(&regex::escape(&ch.to_string()));
             }
         }
     }
@@ -213,7 +211,7 @@ pub fn path_scan(input: TokenStream) -> TokenStream {
                     quote! { if true }
                 };
                 arm_match_tokens.push(quote! {
-                    if let Some(__caps) = ::regex::Regex::new(#regex_lit).unwrap().captures(input) {
+                    if let Some(__caps) = ::path_scan::regex::Regex::new(#regex_lit).unwrap().captures(input) {
                         #(#bindings)*
                         #cond_check {
                             return #value;
