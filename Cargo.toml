@@ -1,0 +1,15 @@
+[package]
+name = "path_scan_macro"
+version = "0.0.1"
+edition = "2024"
+license = "MIT"
+authors = ["Conashimi Momota <momota.ry2@gmail.com>"]
+description = "The macro implementation of path_scan"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2.0", features = ["full"] }
+quote = "1.0"
+regex = "1.11"
