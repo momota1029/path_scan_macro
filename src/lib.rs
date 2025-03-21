@@ -349,19 +349,19 @@ pub fn path_scan_val(input: TokenStream) -> TokenStream {
     let Arms { arms, completeness } = arms;
 
     let mut arm_match_tokens = Vec::new();
-    for Arm { patterns, expr, cond } in arms.into_iter() {
+    for (arm_index, Arm { patterns, expr, cond }) in arms.into_iter().enumerate() {
         let value = if completeness {
             quote! { #expr }
         } else {
             quote! { Some({ #expr }) }
         };
         if !patterns.is_empty() {
-            for pat_lit in patterns.into_iter() {
+            for (pat_index, pat_lit) in patterns.into_iter().enumerate() {
                 let pattern_str = pat_lit.value();
                 let (regex_str, idents) = compile_pattern(&pattern_str);
                 let regex_lit = LitStr::new(&regex_str, pat_lit.span());
                 let mut bindings = Vec::new();
-                let regex_var = format_ident!("__regex");
+                let regex_var = format_ident!("__regex_{}_{}", arm_index, pat_index);
                 for ident in idents {
                     let ident_token = Ident::new(&ident, pat_lit.span());
                     bindings.push(quote! {
